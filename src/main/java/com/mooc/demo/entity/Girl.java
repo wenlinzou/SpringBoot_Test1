@@ -5,15 +5,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @description
  * @author mqliu
+ * @description
  * @date 2018/8/22 16:23
  */
 @Entity
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "handler" })
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Girl implements Serializable {
 
     @Id
@@ -22,8 +24,11 @@ public class Girl implements Serializable {
 
     private String size;
 
+    @Min(value = 18, message = "未成年少女禁止入内")
     private Integer age;
 
+    @NotNull(message = "金额必传")
+    private String money;
     /**
      * 不生成会报错
      */
@@ -52,5 +57,23 @@ public class Girl implements Serializable {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
+    }
+
+    @Override
+    public String toString() {
+        return "Girl{" +
+                "id=" + id +
+                ", size='" + size + '\'' +
+                ", age=" + age +
+                ", money=" + money +
+                '}';
     }
 }
