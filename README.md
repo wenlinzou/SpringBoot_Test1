@@ -1,8 +1,11 @@
-启动运行springboot
 
-1可以在目录下运行命令：`mvn spring-boot:run`
+## 学习笔记
 
- 2mvn install 然后到target里面运行
+启动运行`springboot`
+
+1 可以在目录下运行命令：`mvn spring-boot:run`
+
+2 `mvn install` 然后到`target`里面运行
 
 `java -jar speaker-platform-service-1.0-SNAPSHOT.jar --spring.profiles.active=test`
 
@@ -30,11 +33,12 @@ girl.size: L
 content: "size: ${girl.size}, age: ${girl.age}" 
 ```
 
-使用bean配置（放置类中）
+使用bean配置（放置类中）可以新建一个`girl-prod/dev.properties`
 
 ```
 @Componet
 @ConfigurationProperties(prefix = "girl")//前缀
+@PropertySource("classpath:girl-${spring.profiles.active}.properties")
 public class GirlBean{    
 	private Integer age;    
 	private String size;    //Geter Seter
@@ -65,7 +69,7 @@ spring:  
 
 
 
-Controller的使用
+`Controller`的使用
 
 `@RestController`等同于`@Controller`和`@ResponseBody`
 
@@ -112,7 +116,7 @@ public String test(@RequestParam(value ="id", required = false, defaultValue = "
 
 数据库
 
-修改pom.xml
+修改`pom.xml`
 
 ```
 <dependency>        
@@ -152,7 +156,7 @@ spring:    
 
 
 
-getOne报错：
+`getOne`报错：
 
 ```
 com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer found for class org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer and no properties discovered to create BeanSerializer (to avoid exception, disable SerializationFeature.FAIL_ON_EMPTY_BEANS) (through reference chain: com.mooc.demo.config.entity.Girl_$$_jvstce5_0["handler"]) 
@@ -166,29 +170,27 @@ com.fasterxml.jackson.databind.exc.InvalidDefinitionException: No serializer fou
 
 数据事务
 
-确保方法是public，引擎是InnoDB，如果是MyISAM事务是不起作用
+确保方法是`public`，引擎是`InnoDB`，如果是`MyISAM`事务是不起作用
 
 `import org.springframework.transaction.annotation.Transactional;` 
 
 ```
 import org.springframework.transaction.annotation.Transactional; 
 
-@Servicepublic class GirlService {        
+@Service
+public class GirlService {        
 
-@Autowired    
+    @Autowired    
+    private GirlMapper girlMapper;     
 
-private GirlMapper girlMapper;     
+    @Transactional(rollbackFor={Exception.class})    
+    public void initTwo() {    
 
-@Transactional(rollbackFor={Exception.class})    
-
-public void initTwo() {    
-
-}
-
+    }
 }
 ```
 
-  表单验证@Valid
+  表单验证`@Valid`
 
 实体对象加上注解
 
@@ -198,25 +200,23 @@ public void initTwo() {  
 private Integer age; 
 ```
 
-controller上方法上加上@Validate注解，加上BindingResult用于返回提示信息
+`controller`上方法上加上`@Validate`注解，加上`BindingResult`用于返回提示信息
 
 ```
 @PostMapping(value = "/save")
-
 public Girl save(@Validated Girl girl, BindingResult bindingResult) {    
 
-if (bindingResult.hasErrors()) {        
-
-System.out.println(bindingResult.getFieldError().getDefaultMessage());        
-
-return null;    }
+    if (bindingResult.hasErrors()) {        
+        System.out.println(bindingResult.getFieldError().getDefaultMessage());        
+        return null;    
+    }
 
 }
 ```
 
   AOP统一处理请求日志
 
-pom.xml
+    pom.xml 
 
 ```
 <!--AOP切面-->
@@ -280,7 +280,7 @@ public class HttpAspect {     
 
 统一异常处理
 
-1自定义一个异常捕获的Handle
+1 自定义一个异常捕获的Handle
 
 ```
 @ControllerAdvice
@@ -295,7 +295,7 @@ public class ExceptionHandle {    
 	public Result handle(Exception e) {        
 		if (e instanceof GirlException) {            
 			GirlException girlException = (GirlException) e;            
-			return ResultUtil.error(girlException.getCode(), 				girlException.getMessage());
+			return ResultUtil.error(girlException.getCode(), girlException.getMessage());
 		} else {            
 			logger.error("[系统异常]{}", e);            
 			return ResultUtil.error(-1, "未知错误");        
@@ -306,7 +306,7 @@ public class ExceptionHandle {    
 
 
 
-2自定义一个自己的异常
+2 自定义一个自己的异常
 
 ```
 public class GirlException extends RuntimeException {     
@@ -326,7 +326,7 @@ public class GirlException extends RuntimeException {     
 
 
 
-3在Service中抛出自己定义的异常
+3 在Service中抛出自己定义的异常
 
 ```
 public void getAge(Integer id) {    
@@ -345,7 +345,7 @@ public void getAge(Integer id) {    
 
 
 
-4定义枚举
+4 定义枚举
 
 ```
 public enum ResultEnum {    
@@ -372,7 +372,7 @@ public enum ResultEnum {    
 
 单元测试
 
-1Service方法测试在test包下新建GirlServiceTest（单元测试GirlService中findOne方法）{备注：在方法上右击选择goto然后选择Test，最后选择要单元测试的方法}
+1 Service方法测试在`test`包下新建`GirlServiceTest`（单元测试`GirlService`中`findOne`方法）{备注：在方法上右击选择`goto`然后选择`Test`，最后选择要单元测试的方法}
 
 ```
 @RunWith(SpringRunner.class)
@@ -391,7 +391,7 @@ public class GirlServiceTest {     
 
 
 
-2Controller方法，单元测试
+2 Controller方法，单元测试
 
 ```
 @RunWith(SpringRunner.class)
