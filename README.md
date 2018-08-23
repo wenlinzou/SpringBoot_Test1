@@ -80,8 +80,9 @@ Controller的使用
 
 获取参数
 
-| @PathVariable | 获取url中的数据  |
+| 参数 | 说明  |
 | ------------- | ---------------- |
+| @PathVariable | 获取url中的数据  |
 | @RequestParam | 获取请求参数的值 |
 | @GetMapping   | 组合注解         |
 
@@ -141,8 +142,9 @@ spring:    
 			show-sql: true
 ```
 
-| update      | 常用                                   |
+| 参数      | 说明                                   |
 | ----------- | -------------------------------------- |
+| update      | 常用 |
 | create      | 运行时自动创建表(每次都先删除后创建表) |
 | create-drop | 运行结束时，删除表                     |
 | none        | 什么都不做                             |
